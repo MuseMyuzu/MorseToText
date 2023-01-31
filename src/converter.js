@@ -4,8 +4,10 @@ class Converter{
     static prev_pressed; //前フレームのpressed
     static startFrame; //押し始めたフレーム
     static endFrame;   //離したフレーム
-    static duration = []; //押しているとき、押していないときの時間の記録
+    static press_duration = []; //押しているときの時間の記録
+    static release_duration = []; //押していないときの時間の記録
     static notPressingDuration; //押していない時間
+    static codes = []; //トンツー、単語間などを記録
 
     static initialize(){
         //PCかスマホか確認
@@ -50,18 +52,41 @@ class Converter{
         if(this.pressed === true && this.prev_pressed === false){
             this.startFrame = frame;
             this.notPressingDuration = this.startFrame - this.endFrame;
-            this.duration.push(this.notPressingDuration);
-            console.log(this.duration);
+            this.release_duration.push(this.notPressingDuration);
+            console.log(this.release_duration);
         }
         
         //離されたとき
         if(this.pressed === false && this.prev_pressed === true){
             this.endFrame = frame;
-            this.duration.push(this.endFrame - this.startFrame);
-            console.log(this.duration);
+            this.press_duration.push(this.endFrame - this.startFrame);
+            console.log(this.press_duration);
+
+            this.durationToCodes();
         }
 
         //pressedをprev_pressedへ
         this.prev_pressed = this.pressed;
+    }
+
+    static durationToCodes(){
+        let code_threshold;
+        this.codes = [];
+
+        //ボタンを押す長さの中央値を、トンツーの境目とする
+        const mid = Math.floor(this.press_duration.length / 2);
+        const nums = [...this.press_duration].sort((a, b) => a - b);
+        code_threshold = this.press_duration.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+
+        for(let i = 0; i<this.press_duration.length; i++){
+            if(this.press_duration[i] > code_threshold){
+                this.codes.push(3);
+            }else{
+                this.codes.push(1);
+            }
+        }
+
+        console.log("codes = " + this.codes);
+
     }
 }
