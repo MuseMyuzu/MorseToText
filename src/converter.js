@@ -72,6 +72,7 @@ class Converter{
     static durationToCodes(){
         let code_threshold;
         this.codes = [];
+        let chr_codes = []; //アルファベット一文字分のトンツーを入れる
         let th_min = 5;
         let th_max = 20;
 
@@ -88,13 +89,20 @@ class Converter{
 
         for(let i = 0; i<this.press_duration.length; i++){
             if(this.press_duration[i] > code_threshold){
-                this.codes.push(3);
+                chr_codes.push(3);
             }else{
-                this.codes.push(1);
+                chr_codes.push(1);
+            }
+
+            if(this.release_duration[i+1] > code_threshold){
+                this.codes.push(chr_codes);
+                chr_codes = [];
             }
         }
 
-        console.log("codes = " + this.codes);
+        console.log("codes = " + this.codes + ", codes.length = " + this.codes.length);
 
+        //press    0 1 2 3 4 5
+        //release 0 1 2 3 4 5 6
     }
 }
