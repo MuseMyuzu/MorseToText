@@ -72,11 +72,19 @@ class Converter{
     static durationToCodes(){
         let code_threshold;
         this.codes = [];
+        let th_min = 5;
+        let th_max = 20;
 
-        //ボタンを押す長さの中央値を、トンツーの境目とする
-        const mid = Math.floor(this.press_duration.length / 2);
-        const nums = [...this.press_duration].sort((a, b) => a - b);
-        code_threshold = this.press_duration.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+        //ボタンを押す長さの平均値を、トンツーの境目とする
+        let sum = 0;
+        this.press_duration.forEach(element => {
+            sum += element;
+        });
+        code_threshold = sum/this.press_duration.length;
+
+        //code_thresholdの範囲を制限
+        if(code_threshold < th_min) code_threshold = th_min;
+        if(code_threshold > th_max) code_threshold = th_max;
 
         for(let i = 0; i<this.press_duration.length; i++){
             if(this.press_duration[i] > code_threshold){
