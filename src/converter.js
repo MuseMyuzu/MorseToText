@@ -83,7 +83,7 @@ class Converter{
         let chr_codes = []; //アルファベット一文字分のトンツーを入れる
         let th_min = 5;
         let th_max = 20;
-        let words_th_ratio = 4;
+        let words_th_ratio = 5;
 
         //ボタンを押す長さの平均値を、トンツーの境目とする
         let sum = 0;
